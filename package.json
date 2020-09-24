@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "url": "git@github.com:eladchen/semantic-release-test.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -13,6 +16,7 @@
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
+    "conventional-changelog-conventionalcommits": "^4.4.0",
     "semantic-release": "^17.1.2"
   }
 }

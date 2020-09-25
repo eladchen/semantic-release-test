@@ -1,3 +1,10 @@
+### [1.0.1](https://github.com/eladchen/semantic-release-test/compare/v1.0.0...v1.0.1) (2020-09-24)
+
+
+### Bug Fixes
+
+* another major ([411d822](https://github.com/eladchen/semantic-release-test/commit/411d82236d06fa5ea291d8b5f53ff6bb2449a92b))
+
 ## 1.0.0 (2020-09-24)
 
 

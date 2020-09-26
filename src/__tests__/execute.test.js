@@ -1,5 +1,7 @@
 const { Command } = require("../Command");
 const { execute } = require("../execute");
+const { gitContext } = require("../execution-context/git");
+const { gitConventionalCommitsContext } = require("../execution-context/git-conventional-commits");
 
 class GenerateChangeLogCommand extends Command {
 	constructor(filePath) {
@@ -36,7 +38,7 @@ class FailingCommand extends Command {
 // 	- verify the current branch is not behind its remote counterpart
 
 execute({
-	context: [],
+	context: [gitContext, gitConventionalCommitsContext],
 	commands: [
 		new GenerateChangeLogCommand("CHANGELOG.md"),
 		new FailingCommand(),

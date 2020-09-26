@@ -5,7 +5,7 @@ async function verifyConditions(pluginConfig, context) {
 }
 
 async function prepare(pluginConfig, context) {
-	throw new Error();
+	// throw new Error();
 }
 
 // Generate a changelog -> CHANGELOG.md

@@ -1,42 +1,75 @@
 const execute = require("execa");
+const semver = require("semver");
 
-const getHeadBranchName = async () => {
-    const { stdout } = execute("git", ["rev-parse", "--abbrev-ref", "HEAD"]);
+const getGitVersion = async () => {
+    const { stdout } = await execute("git", ["--version"]);
 
-    return stdout;
+    return stdout.split(" ")[2];
 };
 
 const getHeadSha = async () => {
-    const { stdout } = execute("git", ["rev-parse", "HEAD"]);
+    const { stdout } = await execute("git", ["rev-parse", "HEAD"]);
 
     return stdout;
 };
 
-const getRefTags = async (ref) => {
-    const { stdout } = execute("git", ["tag", `--merged=${ref}`, `--format='%(refname:strip=2):%(objectname)'`]);
+/**
+ * This method requires the git client version to be >= 2.7.0
+ * source: https://stackoverflow.com/a/39084124/1614199
+ */
+const getHeadTags = async () => {
+    const minGitVersion = "2.7.0"
+    const getVersion = await getGitVersion();
+
+    if (semver.satisfies(getVersion, `>= ${minGitVersion}`)) {
+        const tags = [];
+        const separator = ":"
+        const { stdout } = await execute("git", [
+            "tag",
+            `--merged=HEAD`,
+            `--format=%(refname:strip=2)${separator}%(objectname)`
+        ]);
+
+        for (const tag of stdout.split("\n")) {
+            const [name, sha] = tag.split(separator);
+
+            tags.push({
+                sha,
+                name,
+                ref: `refs/tags/${name}`
+            });
+        }
+
+        return tags;
+    } //
+    else {
+        throw new Error(`Git version ${minGitVersion} is required. Found ${getVersion}.`);
+    }
+};
+
+const getHeadBranchName = async () => {
+    const { stdout } = await execute("git", ["rev-parse", "--abbrev-ref", "HEAD"]);
 
     return stdout;
 };
 
-// List tags of a branch:
-// source: https://stackoverflow.com/a/39084124/1614199
-// git tag --merged <ref> --format '%(objectname)' (since git v2.7.x)
-async function gitContext(context) {
-    const isGitRepo = true; // throw if false
-    const headBranchSha = getHeadSha(); // git rev-parse HEAD
-    const headBranchName = getHeadBranchName();
-    const tags = getRefTags();
+const gitContext = async (context) => {
+    const [headSha, headTags, headBranchName] = await Promise.all([
+        getHeadSha(),
+        getHeadTags(),
+        getHeadBranchName()
+    ]);
 
     context.git = Object.freeze({
-        branch: Object.freeze({
-            sha: headBranchSha,
+        head: Object.freeze({
+            sha: headSha,
             name: headBranchName,
 
             get tags() {
-                return JSON.parse(JSON.stringify(tags));
+                return JSON.parse(JSON.stringify(headTags));
             }
         }),
     });
-}
+};
 
 module.exports = { gitContext }

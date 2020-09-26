@@ -14,6 +14,7 @@ const generateContext = async (contextPlugins) => {
 const execute = async (config) => {
 	const context = Object.freeze(await generateContext(config.context));
 	const commands = config.commands;
+	const undoErrors = [];
 
 	for (let i = 0, l = commands.length; i < l; i += 1) {
 		const command = commands[i];
@@ -22,11 +23,23 @@ const execute = async (config) => {
 		if (error) {
 			while (i--) {
 				[undoError] = await to(commands[i].undo(context, error));
+
+				if (undoError) {
+					undoErrors.push();
+				}
 			}
 
 			break;
 		}
 	}
+
+	if (undoErrors.length) {
+		console.error(`Encountered ${undoErrors.length} while undoing:`);
+
+		for (const error of undoErrors) {
+			console.error(error);
+		}
+	}
 };
 
-module.exports = { semanticRelease: execute }
+module.exports = { execute }

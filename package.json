@@ -18,10 +18,13 @@
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
     "conventional-changelog-conventionalcommits": "^4.4.0",
+    "conventional-recommended-bump": "^6.0.10",
     "semantic-release": "^17.1.2"
   },
   "dependencies": {
     "await-to-js": "^2.1.1",
-    "execa": "^4.0.3"
+    "conventional-commits-parser": "^3.1.0",
+    "execa": "^4.0.3",
+    "semver": "^7.3.2"
   }
 }

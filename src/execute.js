@@ -11,7 +11,7 @@ const generateContext = async (contextPlugins) => {
 	return context;
 };
 
-const semanticRelease = async (config) => {
+const execute = async (config) => {
 	const context = Object.freeze(await generateContext(config.context));
 	const commands = config.commands;
 
@@ -21,7 +21,7 @@ const semanticRelease = async (config) => {
 
 		if (error) {
 			while (i--) {
-				[undoError] = await to(commands[i].undo(context));
+				[undoError] = await to(commands[i].undo(context, error));
 			}
 
 			break;
@@ -29,4 +29,4 @@ const semanticRelease = async (config) => {
 	}
 };
 
-module.exports = { semanticRelease }
+module.exports = { semanticRelease: execute }

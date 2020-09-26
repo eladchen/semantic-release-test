@@ -21,6 +21,7 @@
     "semantic-release": "^17.1.2"
   },
   "dependencies": {
-    "await-to-js": "^2.1.1"
+    "await-to-js": "^2.1.1",
+    "execa": "^4.0.3"
   }
 }

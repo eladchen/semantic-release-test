@@ -23,8 +23,12 @@
   },
   "dependencies": {
     "await-to-js": "^2.1.1",
+    "conventional-changelog-cli": "^2.1.0",
+    "conventional-changelog-writer": "^4.0.17",
     "conventional-commits-parser": "^3.1.0",
     "execa": "^4.0.3",
+    "get-stream": "^6.0.0",
+    "into-stream": "^6.0.0",
     "semver": "^7.3.2"
   }
 }

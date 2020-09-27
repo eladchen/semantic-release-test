@@ -53,7 +53,7 @@ const getHeadBranchName = async () => {
     return stdout;
 };
 
-const gitContext = async (context) => {
+const gitHeadContext = async (context) => {
     const [headSha, headTags, headBranchName] = await Promise.all([
         getHeadSha(),
         getHeadTags(),
@@ -72,4 +72,4 @@ const gitContext = async (context) => {
     });
 };
 
-module.exports = { gitContext }
+module.exports = { gitHeadContext }

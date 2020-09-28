@@ -1,11 +1,10 @@
 const { to } = require("await-to-js");
 
-// Determine release type, change log, etc..
 const generateContext = async (contextPlugins) => {
 	const context = {};
 
-	for (let plugin of contextPlugins) {
-		await plugin(context);
+	for (const plugin of contextPlugins) {
+		await Promise.resolve(plugin(context));
 	}
 
 	return context;
@@ -34,10 +33,10 @@ const execute = async (config) => {
 	}
 
 	if (undoErrors.length) {
-		console.error(`Encountered ${undoErrors.length} while undoing:`);
+		context.logger.error(`Encountered ${undoErrors.length} while undoing:`);
 
 		for (const error of undoErrors) {
-			console.error(error);
+			context.logger.error(error);
 		}
 	}
 };

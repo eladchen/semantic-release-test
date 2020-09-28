@@ -2,11 +2,25 @@ const getConventionalCommitsPreset = require("conventional-changelog-conventiona
 
 const { Command } = require("../Command");
 const { execute } = require("../execute");
+const { loggerContext } = require("../context/logger");
+const { dryRunContext } = require("../context/dry-run");
 const { gitHeadContext } = require("../context/git/head");
 const { gitCommitsContext } = require("../context/git/commits");
 const { gitSemanticVersionContext } = require("../context/git/semantic-version");
 const { gitConventionalReleaseContext } = require("../context/git/conventional-release");
 const { gitConventionalChangelogContext } = require("../context/git/conventional-changelog");
+
+class PrintErrorCommand extends Command {
+	constructor() {
+		super();
+	}
+
+	async execute(context) {}
+
+	async undo(context, error) {
+		context.logger.error(error);
+	}
+}
 
 class FailingCommand extends Command {
 	constructor() {
@@ -18,7 +32,7 @@ class FailingCommand extends Command {
 	}
 
 	async undo(context, error) {
-		console.log("I will never be called")
+		context.logger.info("I will never be called")
 	}
 }
 
@@ -30,7 +44,12 @@ class PrintContextCommand extends Command {
 	}
 
 	async execute(context) {
-		console.log(context);
+		context.logger.info("info");
+		context.logger.warn("warn");
+		context.logger.error("error");
+		context.logger.debug("debug");
+
+		// context.logger.info(JSON.stringify(context, null, 2));
 	}
 
 	async undo(context, error) {}
@@ -44,11 +63,11 @@ class GenerateChangeLogCommand extends Command {
 	}
 
 	async execute(context) {
-		console.log(`${this._filePath} created`);
+		context.logger.info(`${this._filePath} created`);
 	}
 
 	async undo(context, error) {
-		console.log(`${this._filePath} deleted`);
+		context.logger.info(`${this._filePath} deleted`);
 	}
 }
 
@@ -85,6 +104,12 @@ const conventionalChangelogContext = gitConventionalChangelogContext({
 
 execute({
 	context: [
+		loggerContext({
+			logLevel: 4,
+			prefix: "[release-commands]",
+			silent() { return false }
+		}),
+		dryRunContext(false),
 		gitHeadContext,
 		gitCommitsContext,
 		conventionalReleaseContext,
@@ -93,6 +118,7 @@ execute({
 	],
 
 	commands: [
+		new PrintErrorCommand(),
 		new PrintContextCommand(),
 		new GenerateChangeLogCommand("CHANGELOG.md"),
 		new FailingCommand(),

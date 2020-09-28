@@ -1,0 +1,3 @@
+// Commit and push a set of file paths.
+// git add ...paths, git commit <commit message>, git push origin:HEAD
+// undo uses git revert <commit-hash-before-the-change>, commit, push and so on...
